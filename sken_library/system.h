@@ -33,7 +33,7 @@ public:
 	bool changeTimerInterruptPeriod(int id,int period);
 	bool startCanCommunicate(Pin tx_pin,Pin rx_pin,CanSelect can_select);
 	bool canTransmit(CanSelect can_select,uint32_t stdid,uint8_t* data_p,int data_size,int dead_time = 10);
-	bool addCanRceiveInterruptFunc(CanSelect can_select,Can_data* can_data);
+	bool addCanRceiveInterruptFunc(CanSelect can_select,CanData* can_data);
 	bool deleteCanRceiveInterruptFunc(CanSelect can_select);
 private:
 	static bool instance_create_flag_;

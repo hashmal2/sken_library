@@ -19,7 +19,7 @@ public:
 	inline CAN_HandleTypeDef* getCanHandle(void);
 	inline void receiveInterruptCallback(void);
 	HAL_StatusTypeDef transmit(uint32_t stdid,uint8_t* data_p,int data_size,int dead_time = 10);
-	void addRceiveInterruptFunc(Can_data* can_data);
+	void addRceiveInterruptFunc(CanData* can_data);
 	void deleteRceiveInterruptFunc();
 	CanRxMsgTypeDef rx_receive();
 private:
@@ -33,7 +33,7 @@ private:
 	CAN_FilterConfTypeDef filter_config_;
 	CanRxMsgTypeDef can_rx_;
 	CanTxMsgTypeDef can_tx_;
-	Can_data* can_data_;
+	CanData* can_data_;
 	bool can_interrupt_flag_;
 };
 

@@ -350,7 +350,7 @@ bool System::canTransmit(CanSelect can_select,uint32_t stdid,uint8_t* data_p,int
 	return true;
 }
 
-bool System::addCanRceiveInterruptFunc(CanSelect can_select,Can_data* can_data)
+bool System::addCanRceiveInterruptFunc(CanSelect can_select,CanData* can_data)
 {
 	if(can_select == CAN_1){
 		can_1.addRceiveInterruptFunc(can_data);

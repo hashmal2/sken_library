@@ -65,11 +65,9 @@ enum I2CSelect{
 	I2C_3
 };
 
-struct Can_data{
-	uint32_t my_stdid;
+struct CanData{
 	uint32_t rx_stdid;
 	uint8_t rx_data[8];
-	uint8_t tx_data[8];
 };
 
 namespace io_convert

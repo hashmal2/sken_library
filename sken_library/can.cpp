@@ -136,7 +136,7 @@ HAL_StatusTypeDef Can::transmit(uint32_t stdid,uint8_t* data_p,int data_size,int
 	return HAL_CAN_Transmit(&can_handle_,dead_time);
 }
 
-void Can::addRceiveInterruptFunc(Can_data* can_data)
+void Can::addRceiveInterruptFunc(CanData* can_data)
 {
 	can_data_ = can_data;
 	can_interrupt_flag_ = true;
