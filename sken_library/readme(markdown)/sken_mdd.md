@@ -79,7 +79,7 @@ CAN番号
 [サンプルコード]  
 オブジェクトを作成し、初期化する
 
-'''c++
+``` c++
 #include "stm32f4xx.h"
 #include "sken_library/include.h"
 #include "sken_mdd.h"
