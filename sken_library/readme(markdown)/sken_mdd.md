@@ -20,11 +20,21 @@
 * MOTOR_COMMAND_MODE_SELECT：PWM指令モードか回転数指令モードかの選択
 * ENCODER_RESOLUTION_CONFIG：エンコーダ分解能設定
 
+# enum MddStdid
+* None
+* MDD_0
+* MDD_1
+* MDD_2
+* MDD_3
+* MDD_4
+* MDD_5
+* MDD_6
+* MDD_7
+
 # class SkenMdd
 
 ## void SkenMdd::init(Pin tx_pin,Pin rx_pin,UartNumber uart_num)
-初期化クラス
-最初に呼び出す必要がある
+Uart通信を行う際の初期化関数
 
 [パラメータ]  
 送信ピン番号
@@ -48,6 +58,38 @@ int main(void)
 {
 	sken_system.init();
 	mdd.init(B10,C5,SERIAL3);
+	while (1) {
+		
+	}
+}
+```
+
+## void init(MddStdid stdid,Pin can_tx,Pin can_rx,CanSelect can_select)
+CAN通信を行う際の初期化関数
+
+[パラメータ]  
+MDDスタンダードID  
+送信ピン番号  
+受信ピン番号  
+CAN番号
+
+[戻り値]  
+なし  
+
+[サンプルコード]  
+オブジェクトを作成し、初期化する
+
+'''c++
+#include "stm32f4xx.h"
+#include "sken_library/include.h"
+#include "sken_mdd.h"
+
+SkenMdd mdd;
+
+int main(void)
+{
+	sken_system.init();
+	mdd.init(MDD_0,A12,A11,CAN_1);
 	while (1) {
 		
 	}
