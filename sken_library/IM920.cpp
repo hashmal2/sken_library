@@ -47,8 +47,19 @@ void IM920::read(uint16_t* rx_id,uint8_t* rx_data,IM920Bytes bytes){
 }
 
 
-void IM920::write(uint8_t* tx_data,IM920Bytes bytes){
-	serial_.write(TXDA_,5);
+void IM920::write(uint8_t* tx_data,IM920Bytes bytes,int node_num){
+	if(node_num == 0x0000){
+		serial_.write(TXDA_,5);
+	}else{
+		serial_.write(TXDU_,5);
+		sprintf(TxChar_,"%04X",node_num);
+		for(int i=0; i<4; i++){
+			TxData_[i] = TxChar_[i];
+		}
+		serial_.write(TxData_,4);
+		uint8_t comma = ',';
+		serial_.write(&comma,1);
+	}
 	switch(bytes){
 	case Bytes8:
 		sprintf(TxChar_,"%02X%02X%02X%02X%02X%02X%02X%02X",tx_data[0],tx_data[1],tx_data[2],tx_data[3],tx_data[4],tx_data[5],tx_data[6],tx_data[7]);
