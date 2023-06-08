@@ -3,7 +3,7 @@
 
 # class Motor
 ## void Motor::init(Pin pin_a,Pin pin_p,Pin pin_b,TimerNumber timer,TimerChannel ch);
-ピン、タイマー、チャンネルの設定  
+芝ドラのピン、タイマー、チャンネルの設定  
 
 [パラメータ]  
 Aピン  
@@ -27,7 +27,40 @@ Motor motor;
 int main(void){
   sken_system.init();
   
-  motor.init(C2,C8,C3.TIMER8,CH3);
+  motor.init(C2,C8,C3,TIMER8,CH3);
+  
+  while(true){
+    
+  }
+}
+```
+
+## void Motor::init(MtrPin mtr_pin,Pin pin,TimerNumber timer,TimerChannel ch);
+黒ドラのピン、タイマー、チャンネルの設定  
+
+[パラメータ]  
+"Apin" or "Bpin"
+ピン番号
+タイマー番号
+タイマーチャンネル
+
+[戻り値]  
+なし
+
+[サンプルコード]  
+A0をAピン、A1をBピンに設定
+``` c++
+#include "stm32f4xx.h"
+#include "stm32f4xx_nucleo.h"
+#include "sken_library/include.h"
+
+Motor motor;
+
+int main(void){
+  sken_system.init();
+  
+  motor.init(Apin,A0,TIMER5,CH1);
+  motor.init(Bpin,A1,TIMER5,CH2);
   
   while(true){
     
@@ -57,7 +90,8 @@ Motor motor;
 int main(void){
   sken_system.init();
   
-  motor.init(C2,C8,C3.TIMER8,CH3);
+  motor.init(Apin,A0,TIMER5,CH1);
+  motor.init(Bpin,A1,TIMER5,CH2);
   
   while(true){
     motor.write(30);
@@ -86,7 +120,8 @@ Motor motor;
 int main(void){
   sken_system.init();
   
-  motor.init(C2,C8,C3.TIMER8,CH3);
+  motor.init(Apin,A0,TIMER5,CH1);
+  motor.init(Bpin,A1,TIMER5,CH2);
   
   while(true){
     motor.stop();
