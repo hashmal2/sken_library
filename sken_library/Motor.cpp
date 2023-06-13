@@ -49,7 +49,7 @@ void Motor::write(int val){
 			motor[1].write(0);
 		}else if(val < 0){
 			motor[0].write(0);
-			motor[1].write(val);
+			motor[1].write(-1*val);
 		}
 	}
 }
