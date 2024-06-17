@@ -36,7 +36,7 @@ int main(void){
 ```
 
 ## void Motor::init(MtrPin mtr_pin,Pin pin,TimerNumber timer,TimerChannel ch);
-黒ドラのピン、タイマー、チャンネルの設定  
+アルタイルドライバーのピン、タイマー、チャンネルの設定  
 
 [パラメータ]  
 "Apin" or "Bpin"
