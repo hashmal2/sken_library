@@ -16,7 +16,7 @@
 
 enum MtrName{
 	ShibaDriver,
-	KuroDriver
+	AltairDriver
 };
 
 enum MtrPin{

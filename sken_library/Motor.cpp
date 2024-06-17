@@ -21,7 +21,7 @@ void Motor::init(Pin pin1,Pin pinP,Pin pin2,TimerNumber timer,TimerChannel ch){
 }
 
 void Motor::init(MtrPin mtr_pin,Pin pin,TimerNumber timer,TimerChannel ch){
-	mtr_name_ = KuroDriver;
+	mtr_name_ = AltairDriverDriver;
 	motor[mtr_pin].init(pin,PWM_OUTPUT,timer,ch,20000);
 }
 
@@ -40,7 +40,7 @@ void Motor::write(int val){
 			motor[1].write(-1*val);
 			motor[2].write(HIGH);
 		}
-	}else if(mtr_name_ == KuroDriver){
+	}else if(mtr_name_ == AltairDriver){
 		if(val == 0){
 			motor[0].write(0);
 			motor[1].write(0);
@@ -59,8 +59,8 @@ void Motor::stop(){
 		motor[0].write(HIGH);
 		motor[1].write(0);
 		motor[2].write(HIGH);
-	}else if(mtr_name_ == KuroDriver){
-		motor[0].write(0);
-		motor[1].write(0);
+	}else if(mtr_name_ == AltairDriver){
+		motor[0].write(HIGH);
+		motor[1].write(HIGH);
 	}
 }
