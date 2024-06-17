@@ -21,7 +21,7 @@ void Motor::init(Pin pin1,Pin pinP,Pin pin2,TimerNumber timer,TimerChannel ch){
 }
 
 void Motor::init(MtrPin mtr_pin,Pin pin,TimerNumber timer,TimerChannel ch){
-	mtr_name_ = AltairDriverDriver;
+	mtr_name_ = AltairDriver;
 	motor[mtr_pin].init(pin,PWM_OUTPUT,timer,ch,20000);
 }
 
