@@ -22,7 +22,7 @@ I2C i2c
 
 int main(void){
   sken_system.init();
-  i2c.init(B8,B9,I2C1,400000);
+  i2c.init(B8,B9,I2C_1,400000);
   
   while(true){
   
@@ -36,9 +36,9 @@ int main(void){
 [パラメータ]  
 デバイスアドレス  
 メモリーアドレス  
-メモリーアドレスサイズ
-送信データアドレス
-送信データサイズ
+メモリーアドレスサイズ  
+送信データアドレス  
+送信データサイズ  
 タイムアウト時間[ms]  
 
 [サンプルコード]  
@@ -53,7 +53,7 @@ uint8_t data[8] = {1,2,3,4,5,6,7,8};
 
 int main(void){
   sken_system.init();
-  i2c.init(B8,B9,I2C1,400000);
+  i2c.init(B8,B9,I2C_1,400000);
   
   while(true){
     i2c.write(0x01,0xA0,data,8);
@@ -67,9 +67,9 @@ int main(void){
 [パラメータ]  
 デバイスアドレス  
 メモリーアドレス  
-メモリーアドレスサイズ
-受信データアドレス
-受信データサイズ
+メモリーアドレスサイズ  
+受信データアドレス  
+受信データサイズ  
 タイムアウト時間[ms]  
 
 [サンプルコード]  
@@ -84,7 +84,7 @@ uint8_t data[8];
 
 int main(void){
   sken_system.init();
-  i2c.init(B8,B9,I2C1,400000);
+  i2c.init(B8,B9,I2C_1,400000);
   
   while(true){
     i2c.read(0x01,0xA0,data,8);
