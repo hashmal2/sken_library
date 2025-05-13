@@ -1,3 +1,10 @@
 # sken_library
-STM32f4RE446対応のライブラリ
-ああ
+STM32f4RE446対応のライブラリ．
+
+System Workbench を使用する．
+使用言語はC++．
+includeする関数は
+- #include "stm32f4xx.h"
+- #include "stm32f4xx_nucleo.h"
+- #include "sken_library/include.h"
+の3種類である．
