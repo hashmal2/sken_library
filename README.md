@@ -6,4 +6,5 @@ includeする関数は
 - #include "stm32f4xx.h"
 - #include "stm32f4xx_nucleo.h"
 - #include "sken_library/include.h"<br>
-の3種類である．<br>
+
+の3種類である．
