@@ -299,7 +299,7 @@ int main(void) {
 ```
 
 -  PID制御の使い方
-  - 基本：PIDゲインを設定する
+    - 基本：PIDゲインを設定する
   ```typescript
 Pid pid_control;  // PIDコントローラーオブジェクト
 
@@ -315,7 +315,7 @@ int main(void) {
 }
 ```
 
-  - PID制御を実行する（目標値と現在値から）
+   - PID制御を実行する（目標値と現在値から）
   ```typescript
 Pid pid_control;
 double target = 100;  // 目標値（例えば目標速度）
