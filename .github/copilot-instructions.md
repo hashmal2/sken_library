@@ -93,4 +93,297 @@ if (value < 0) {
 }
 ```
 
-- プログラムに用いる関数はなるべく少なくしてくださいｓｓ
+- プログラムに用いる関数はなるべく少なくしてちょうだい．
+
+
+## サンプルコード
+以下にサンプルコードを示すわ．参考にしてちょうだい．
+- Lチカ（LED点滅）
+```typescript
+Gpio led;  // Gpioクラスのオブジェクトを作成
+
+int main(void) {
+    sken_system.init();          // システム初期化
+    led.init(A5, OUTPUT);         // A5ピンをデジタル出力に設定
+
+    while (1) {
+        led.write(HIGH);          // A5ピンをHIGH（LED点灯）
+        sken_system.delayMillis(500);  // 500ミリ秒待機
+        led.write(LOW);           // A5ピンをLOW（LED消灯）
+        sken_system.delayMillis(500);  // 500ミリ秒待機
+    }
+}
+```
+
+- モーターの回し方
+```typescript
+Motor motor;
+
+int main(void) {
+    sken_system.init();
+    motor.init(Apin, B8, TIMER10, CH1);  // Aピン（回転方向1）
+    motor.init(Bpin, B9, TIMER11, CH1);  // Bピン（回転方向2）
+
+    while (1) {
+        motor.write(50);    // 50%のPWMで正回転
+        sken_system.delayMillis(2000); // 2秒回転
+        motor.stop();       // モータ停止
+        sken_system.delayMillis(2000); // 2秒停止
+        motor.write(-50);    // 50%のPWMで逆回転
+        sken_system.delayMillis(2000); // 2秒回転
+    }
+}
+```
+
+- エンコーダーの読み方（カウント値・角度・速度）
+```typescript
+Encoder encoder;
+
+int main(void) {
+    sken_system.init();
+    encoder.init(A0, A1, TIMER2);  // A0, A1ピンをエンコーダ入力に設定
+
+    while (1) {
+        int count = encoder.read();  // 現在のエンコーダカウント値を取得
+    }
+}
+```
+
+  - 応用：角度・速度も読む（割り込みを使う）
+```typescript
+Encoder encoder;           // エンコーダオブジェクト
+Encoder_data e_data;       // 角度や速度を保存する構造体
+
+// タイマー割り込み関数（毎ms呼び出される）
+void encoder_interrupt() {
+    encoder.interrupt(&e_data);  // エンコーダの値を更新
+}
+
+int main(void) {
+    sken_system.init();
+    encoder.init(A0, A1, TIMER2);                        // A0, A1ピンをエンコーダ入力に設定
+    sken_system.addTimerInterruptFunc(encoder_interrupt, 0, 1); // タイマー割り込み1ms周期で登録
+
+    while (1) {
+        double angle = e_data.deg;      // 現在の角度 [度]
+        double velocity = e_data.volcity; // 現在の速度 [mm/s]
+
+        // ここでangleやvelocityを使った処理を書く
+    }
+}
+```
+
+  - 【補足】構造体Encoder_dataの中身
+```typescript
+struct Encoder_data {
+    int count;        // カウンタ値
+    double rot;       // 回転数 [回転]
+    double deg;       // 角度 [度]
+    double distance;  // 移動距離 [mm]
+    double volcity;   // 速度 [mm/s]
+    double rps;       // 回転速度 [rps]
+};
+```
+
+- サーボモーターの動かし方 
+```typescript
+RcPwm servo;
+
+int main(void) {
+    sken_system.init();
+    servo.init(A5, TIMER2, CH1);  // A5ピンをサーボ信号出力に設定
+
+    while (1) {
+        servo.turn(0);    // 最小角度
+        sken_system.delayMillis(1000);
+
+        servo.turn(50);   // 中央位置
+        sken_system.delayMillis(1000);
+
+        servo.turn(100);  // 最大角度
+        sken_system.delayMillis(1000);
+    }
+}
+```
+
+- リミットスイッチの読み方
+```typescript
+Gpio limit_switch;
+
+int main(void) {
+    sken_system.init();
+    limit_switch.init(C13, INPUT_PULLUP);  // C13ピンにプルアップ入力設定
+
+    while (1) {
+        if (!limit_switch.read()) {  // スイッチが押されたらLOWになる
+            // スイッチ押されたときの処理を書く
+        }
+    }
+}
+```
+
+- UARTのやり方（シリアル通信）
+  - 送信（write）
+```typescript
+Uart serial;
+uint8_t data[2] = { 'A', 'B' };  // 送るデータ
+
+int main(void) {
+    sken_system.init();
+    serial.init(A9, A10, SERIAL1, 9600);  // UART1をボーレート9600で初期化
+
+    while (1) {
+        serial.write(data, 2);   // 2バイト送信
+        sken_system.delayMillis(1000);  // 1秒ごとに送信
+    }
+}
+```
+
+  - 受信（read）
+```typescript
+Uart serial;
+uint8_t received_data;
+
+int main(void) {
+    sken_system.init();
+    serial.init(A9, A10, SERIAL1, 9600);
+
+    while (1) {
+        received_data = serial.read(1000);  // 1000ms以内に受信
+        if (!serial.checkTimeOut()) {
+            // 受信できた場合の処理
+        }
+    }
+}
+```
+
+
+
+-  CAN通信のやり方（sken_system経由）
+  - 送信（canTrancemit）
+  ```typescript
+uint8_t can_tx_data[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+
+int main(void) {
+    sken_system.init();
+    sken_system.startCanCommunicate(B13, B12, CAN_2);  // CAN1開始
+
+    while (1) {
+        sken_system.canTrancemit(CAN_1, 0x123, can_tx_data, 8);  // ID=0x123, 8バイト送信
+        sken_system.delayMillis(1000);  // 1秒ごとに送信
+    }
+}
+```
+
+  - 受信（addCanReceiveInterruptFunc）
+```typescript
+Can_data can_data;  // 受信データを格納する構造体
+uint8_t can_rx_data[6] = {0,0,0,0,0,0};
+
+int main(void) {
+    sken_system.init();
+    sken_system.startCanCommunicate(B13, B12, CAN_2);  // CAN1開始
+    sken_system.addCanRceiveInterruptFunc(CAN_2, &can_data);  // 受信割り込み設定
+    while (1) {
+        if(can_data.rx_stdid == 0x123){
+        // 受信データはcan_data.rx_dataに格納される
+        can_rx_data[0] = can_data.rx_data[0];
+        can_rx_data[1] = can_data.rx_data[1];
+        can_rx_data[2] = can_data.rx_data[2];
+        can_rx_data[3] = can_data.rx_data[3];
+        can_rx_data[4] = can_data.rx_data[4];
+        can_rx_data[5] = can_data.rx_data[5];
+    }
+    }
+}
+```
+
+-  PID制御の使い方
+  - 基本：PIDゲインを設定する
+  ```typescript
+Pid pid_control;  // PIDコントローラーオブジェクト
+
+int main(void) {
+    sken_system.init();
+
+    // P=1, I=1, D=1, 微分フィルタ時定数20msでゲイン設定
+    pid_control.setGain(1, 1, 1, 20);
+
+    while (1) {
+        // ここに制御コードを書く
+    }
+}
+```
+
+  - PID制御を実行する（目標値と現在値から）
+  ```typescript
+Pid pid_control;
+double target = 100;  // 目標値（例えば目標速度）
+double now = 0;       // 現在の値（現在の速度）
+double out = 0;       // 出力（モータへの指令など）
+
+// 毎1msで呼び出される関数
+void pid_func() {
+    out = pid_control.control(target, now, 1);  // 目標値と現在値から制御出力を計算
+}
+
+int main(void) {
+    sken_system.init();
+    pid_control.setGain(1.0, 0.5, 0.1);  // 適当なゲイン設定
+
+    sken_system.addTimerInterruptFunc(pid_func, 0, 1);  // 1msごとにPID制御実行
+
+    while (1) {
+        // outを使ってモーターに指令を出すなど
+    }
+}
+```
+
+  - PID制御を実行する（偏差から直接計算）
+  ```typescript
+Pid pid_control;
+double e = 0;   // 偏差（目標値 - 現在値）
+double out = 0;
+
+void pid_func() {
+    out = pid_control.control(e, 1);  // 偏差から制御出力を計算
+}
+
+int main(void) {
+    sken_system.init();
+    pid_control.setGain(1.0, 0.5, 0.1);  // PIDゲイン設定
+
+    sken_system.addTimerInterruptFunc(pid_func, 0, 1);  // 1msごとにPID制御
+
+    while (1) {
+        // 目標値と現在値の差を計算
+        double target = 100;
+        double now = 50;
+        e = target - now;  // 偏差計算
+    }
+}
+```
+
+  - 積分・微分成分をリセットする
+```typescript
+Pid pid_control;
+double target = 100;
+double now = 0;
+double out = 0;
+
+void pid_func() {
+    out = pid_control.control(target, now, 1);
+}
+
+int main(void) {
+    sken_system.init();
+    pid_control.setGain(1.0, 0.5, 0.1);  // PIDゲイン設定
+    sken_system.addTimerInterruptFunc(pid_func, 0, 1);  // 1msごとに制御
+
+    while (1) {
+        if (sken_system.millis() % 1000 == 0) {  // 毎秒
+            pid_control.reset();  // 積分・微分成分をリセット
+        }
+    }
+}
+```
