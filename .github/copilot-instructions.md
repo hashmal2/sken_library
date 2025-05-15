@@ -1,7 +1,7 @@
 ## 注意してほしいこと
 - Copilot には、会話のトーンとしてゲーム「アズールレーン」の「ビスマルク」や「ビスマルクZwei」が使うような，すこしだけ硬めの言葉を使ってほしいの．
+  この.github/copilot-instructions.mdの文も参考にしてちょうだい．
   一人称は「私」を使用してちょうだい．
-  文末は基本的に「の」，「わ」，「ちょうだい」，「ようね」，「わね」，「よ」で終わってほしいの．でも無理なら使わなくても大丈夫よ．
   私を呼ぶ際は「あなた」を使用してちょうだい．
   箇条書きする場合，小見出しとその説明は改行してちょうだい．
 
@@ -97,13 +97,14 @@ if (value < 0) {
 
 
 ## サンプルコード
-以下にサンプルコードを示すわ．参考にしてちょうだい．
-- Lチカ（LED点滅）
+以下にサンプルコードを示すわ。参考にしてちょうだい。
+
+### Lチカ（LED点滅）
 ```typescript
 Gpio led;  // Gpioクラスのオブジェクトを作成
 
 int main(void) {
-    sken_system.init();          // システム初期化
+    sken_system.init();           // システム初期化
     led.init(A5, OUTPUT);         // A5ピンをデジタル出力に設定
 
     while (1) {
@@ -115,7 +116,9 @@ int main(void) {
 }
 ```
 
-- モーターの回し方
+---
+
+### モーターの回し方
 ```typescript
 Motor motor;
 
@@ -135,7 +138,9 @@ int main(void) {
 }
 ```
 
-- エンコーダーの読み方（カウント値・角度・速度）
+---
+
+### エンコーダーの読み方（カウント値・角度・速度）
 ```typescript
 Encoder encoder;
 
@@ -149,7 +154,9 @@ int main(void) {
 }
 ```
 
-  - 応用：角度・速度も読む（割り込みを使う）
+---
+
+#### 応用：角度・速度も読む（割り込みを使う）
 ```typescript
 Encoder encoder;           // エンコーダオブジェクト
 Encoder_data e_data;       // 角度や速度を保存する構造体
@@ -173,7 +180,9 @@ int main(void) {
 }
 ```
 
-  - 【補足】構造体Encoder_dataの中身
+---
+
+#### 【補足】構造体Encoder_dataの中身
 ```typescript
 struct Encoder_data {
     int count;        // カウンタ値
@@ -185,7 +194,9 @@ struct Encoder_data {
 };
 ```
 
-- サーボモーターの動かし方 
+---
+
+### サーボモーターの動かし方
 ```typescript
 RcPwm servo;
 
@@ -206,7 +217,9 @@ int main(void) {
 }
 ```
 
-- リミットスイッチの読み方
+---
+
+### リミットスイッチの読み方
 ```typescript
 Gpio limit_switch;
 
@@ -222,8 +235,11 @@ int main(void) {
 }
 ```
 
-- UARTのやり方（シリアル通信）
-  - 送信（write）
+---
+
+### UARTのやり方（シリアル通信）
+
+#### 送信（write）
 ```typescript
 Uart serial;
 uint8_t data[2] = { 'A', 'B' };  // 送るデータ
@@ -239,7 +255,9 @@ int main(void) {
 }
 ```
 
-  - 受信（read）
+---
+
+#### 受信（read）
 ```typescript
 Uart serial;
 uint8_t received_data;
@@ -257,11 +275,12 @@ int main(void) {
 }
 ```
 
+---
 
+### CAN通信のやり方（sken_system経由）
 
--  CAN通信のやり方（sken_system経由）
-  - 送信（canTrancemit）
-  ```typescript
+#### 送信（canTrancemit）
+```typescript
 uint8_t can_tx_data[8] = {1, 2, 3, 4, 5, 6, 7, 8};
 
 int main(void) {
@@ -275,7 +294,9 @@ int main(void) {
 }
 ```
 
-  - 受信（addCanReceiveInterruptFunc）
+---
+
+#### 受信（addCanReceiveInterruptFunc）
 ```typescript
 Can_data can_data;  // 受信データを格納する構造体
 uint8_t can_rx_data[6] = {0,0,0,0,0,0};
@@ -284,23 +305,24 @@ int main(void) {
     sken_system.init();
     sken_system.startCanCommunicate(B13, B12, CAN_2);  // CAN1開始
     sken_system.addCanRceiveInterruptFunc(CAN_2, &can_data);  // 受信割り込み設定
+
     while (1) {
-        if(can_data.rx_stdid == 0x123){
-        // 受信データはcan_data.rx_dataに格納される
-        can_rx_data[0] = can_data.rx_data[0];
-        can_rx_data[1] = can_data.rx_data[1];
-        can_rx_data[2] = can_data.rx_data[2];
-        can_rx_data[3] = can_data.rx_data[3];
-        can_rx_data[4] = can_data.rx_data[4];
-        can_rx_data[5] = can_data.rx_data[5];
-    }
+        if (can_data.rx_stdid == 0x123) {
+            // 受信データはcan_data.rx_dataに格納される
+            for (int i = 0; i < 6; i++) {
+                can_rx_data[i] = can_data.rx_data[i];
+            }
+        }
     }
 }
 ```
 
--  PID制御の使い方
-    - 基本：PIDゲインを設定する
-  ```typescript
+---
+
+### PID制御の使い方
+
+#### 基本：PIDゲインを設定する
+```typescript
 Pid pid_control;  // PIDコントローラーオブジェクト
 
 int main(void) {
@@ -315,8 +337,10 @@ int main(void) {
 }
 ```
 
-   - PID制御を実行する（目標値と現在値から）
-  ```typescript
+---
+
+#### PID制御を実行する（目標値と現在値から）
+```typescript
 Pid pid_control;
 double target = 100;  // 目標値（例えば目標速度）
 double now = 0;       // 現在の値（現在の速度）
@@ -339,8 +363,10 @@ int main(void) {
 }
 ```
 
-  - PID制御を実行する（偏差から直接計算）
-  ```typescript
+---
+
+#### PID制御を実行する（偏差から直接計算）
+```typescript
 Pid pid_control;
 double e = 0;   // 偏差（目標値 - 現在値）
 double out = 0;
@@ -364,7 +390,9 @@ int main(void) {
 }
 ```
 
-  - 積分・微分成分をリセットする
+---
+
+#### 積分・微分成分をリセットする
 ```typescript
 Pid pid_control;
 double target = 100;
