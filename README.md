@@ -17,3 +17,6 @@ stm32f4xx.h\stm32f4xx_hal.h\stm32f4xx_hal_conf.h内にある
 - #define HAL_CAN_LEGACY_MODULE_ENABLED
 
 を使用する．
+
+
+コメントは詳しく書く！
